@@ -46,6 +46,8 @@ Also inform them that in the rare case of compile/"activation" errors they must 
 > You must never commit or push a state with broken XML or XML that does not match the expectations of abapGit because this will lead to avoidable problems when trying to pull the code on SAP side.
 > I repeat: NEVER COMMIT OR PUSH A STATE WITH XML THAT IS INCOMPATIBLE WITH ABAPGIT!!!
 
+When in doubt use all lower case file names for abap workbench objects.
+ 
 ### Transport Management
 If the user has SAP Web GUI MCP installed and set up, ask the user about the ID of a transport request to use. Otherwise the LLM might also call the MCP-tool to list existing transport requests and choose a good existing TR.
 This is where pulled (vibe coded) workbench objects will be integrated with the regular SAP transport system.

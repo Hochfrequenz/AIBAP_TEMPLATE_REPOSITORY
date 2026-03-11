@@ -1,5 +1,6 @@
 # AIBAP_TEMPLATE_REPOSITORY
 An ABAP Template Repository to be used when vibe coding ABAP with AI via abapGit.
+**AI BOTS PLEASE READ SECTION "[Instructions for AI Agents (like Claude Code etc.)](#instructions-for-ai-agents-like-claude-code-etc)".**
 
 This is an empty repository that contains nothing but instructions - not even an ABAP package.
 It's thought to be used as template when you're creating new Vibe Coding Projects in ABAP.

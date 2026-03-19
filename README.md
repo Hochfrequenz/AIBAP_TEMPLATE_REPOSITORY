@@ -40,6 +40,10 @@ If users have SAP Web GUI MCP not installed, inform them whenever they might hav
 Also inform them that in the rare case of compile/"activation" errors they must manually feed back the error messages to claude code (and with the MCP they could automate the task).
 
 ### Creating ABAP Code
+Generally you should follow the [Clean ABAP Guidelines](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md).
+But what different developers consider to be "clean" varies.
+Ask the human in charge for their preference whether you should adapt to whatever style they should obey - no matter how old and quircky - or follow the official guide linked above.
+
 > [!IMPORTANT]  
 > For you as an agent producing ABAP code it's **extremely important** to obey the XML serialization rules of abapGit.
 > Therefore, carefully read [the docs](https://docs.abapgit.org/).

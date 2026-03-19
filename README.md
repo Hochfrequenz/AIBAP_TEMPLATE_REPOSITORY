@@ -9,7 +9,7 @@ It's thought to be used as template when you're creating new Vibe Coding Project
 We manage ABAP code in git using abapGit.
 Humans request AI agents to work on git repositories which have been cloned to the humans localhost computer.
 Then code is pushed.
-Then we pull the generated code on SAP side, either by using the SAP Web GUI MCP tool for exactly this purpose or manually.
+Then we pull the generated code on SAP side, either by using the [SAP (Web) GUI MCP tool for exactly this purpose](https://github.com/Hochfrequenz/Z_ABAPGIT_PULL_MCP_SHORTCUT) or manually.
 Then we test our development: Either manually (ok, but time consuming) or automatically by giving an AI agent access to SAP via SAP Web GUI MCP; The AI agent that interacts with SAP reports back feedback and problems to the coding agent.
 The cycle begins again.
 

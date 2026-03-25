@@ -73,8 +73,11 @@ If the user has the SAP MCP server installed and set up, ask the user about the 
 This is where pulled (vibe coded) workbench objects will be integrated with the regular SAP transport system.
 
 ### Authentication
-Remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the SAP MCP server settings (unless they're working only with public repos); it should have at least repo scope, but discussions is also helpful.
-Without the PAT set, they might need to manually pull (and enter the PAT) or the MCP tool to pull on SAP side might fail.
+For private repos, the user must configure a GitHub PAT in the SAP MCP server's environment:
+- **`GITHUB_PAT`** — used for both abapGit pulls and feedback/issue creation. Needs `repo` scope for private ABAP repos.
+- **`ABAPGIT_PAT`** (optional) — if set, overrides `GITHUB_PAT` for abapGit pulls only. Use this when you want separate tokens with different scopes.
+
+If neither is set, pulls from private repos will fail. Public repos work without a PAT.
 Remind the user to restart the MCP by quitting the claude code session. This is the only way to apply new settings (i.e. env vars).
 
 ### Deployment

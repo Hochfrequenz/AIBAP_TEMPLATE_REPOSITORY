@@ -36,7 +36,7 @@ Give the user instructions on how they can check if the MCP configuration works 
 Refer the user to [the official documentation](https://github.com/Hochfrequenz/sapwebgui.mcp) if they have not set it up yet or the server is not running properly.
 The user should have configured it, ideally with a local `.mcp.json` file (which is gitignored).
 
-If users have SAP Web GUI MCP not installed, inform them whenever they might have to open the abapGit transaction manually and pull commits they pushed from their localhost (where claude code runs).
+If users have the SAP MCP server not installed, inform them whenever they might have to open the abapGit transaction manually and pull commits they pushed from their localhost (where claude code runs).
 Also inform them that in the rare case of compile/"activation" errors they must manually feed back the error messages to claude code (and with the MCP they could automate the task).
 
 ### Creating ABAP Code
@@ -61,7 +61,7 @@ When in doubt use all lower case file names for abap workbench objects.
 After pushing ABAP code to the git repository, pull it to SAP using these MCP tools:
 
 1. **Discover the repo name:** Call `sap_abapgit_list_repos()` to see all registered abapGit repositories with their names, Git URLs, and packages.
-2. **Pull:** Call `sap_abapgit_pull(repo="<REPO_NAME>")` to pull changes from git to SAP.
+2. **Pull:** Call `sap_abapgit_pull(repo="<REPO_NAME>")` to pull changes from git to SAP. The `repo` parameter is pattern-matched against registered repository names, so a substring is sufficient.
    - If SAP requires a transport request, the tool returns an error with guidance. Retry with `sap_abapgit_pull(repo="<REPO_NAME>", trkorr="<TRANSPORT_ID>")`.
    - For private repos, ensure `GITHUB_PAT` or `ABAPGIT_PAT` is set in the MCP server's environment (see Authentication below).
 3. **Verify:** After a successful pull, use `sap_read_status_bar()` to confirm the result, or navigate to the pulled objects (e.g., `sap_transaction("SE38")`) to check the code.
@@ -69,11 +69,11 @@ After pushing ABAP code to the git repository, pull it to SAP using these MCP to
 These tools work on both the WebGUI and Desktop backends.
 
 ### Transport Management
-If the user has SAP Web GUI MCP installed and set up, ask the user about the ID of a transport request to use. Otherwise the LLM might also call the MCP-tool to list existing transport requests and choose a good existing TR.
+If the user has the SAP MCP server installed and set up, ask the user about the ID of a transport request to use. Otherwise the LLM might also call the MCP-tool to list existing transport requests and choose a good existing TR.
 This is where pulled (vibe coded) workbench objects will be integrated with the regular SAP transport system.
 
 ### Authentication
-Remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the SAP Web GUI MCP server settings (unless they're working only with public repos); it should have at least repo scope, but discussions is also helpful.
+Remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the SAP MCP server settings (unless they're working only with public repos); it should have at least repo scope, but discussions is also helpful.
 Without the PAT set, they might need to manually pull (and enter the PAT) or the MCP tool to pull on SAP side might fail.
 Remind the user to restart the MCP by quitting the claude code session. This is the only way to apply new settings (i.e. env vars).
 

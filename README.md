@@ -31,8 +31,8 @@ After you created your repository based on this template, please connect it to a
 ## Instructions for AI Agents (like Claude Code etc.)
 
 ### General Setup
-Check that you see the SAP Web GUI MCP server.
-Give the user instructions on how they can check if the mcp configuration works (e.g. command `/mcp` in claude).
+Check that you see the [Hochfrequenz SAP MCP server](https://github.com/Hochfrequenz/sapwebgui.mcp) (available as WebGUI or Desktop backend).
+Give the user instructions on how they can check if the MCP configuration works (e.g. command `/mcp` in claude).
 Refer the user to [the official documentation](https://github.com/Hochfrequenz/sapwebgui.mcp) if they have not set it up yet or the server is not running properly.
 The user should have configured it, ideally with a local `.mcp.json` file (which is gitignored).
 
@@ -53,12 +53,27 @@ Ask the human in charge for their preference whether you should adapt to whateve
 
 When in doubt use all lower case file names for abap workbench objects.
  
+### Pulling Code to SAP (via MCP)
+> [!NOTE]
+> This section applies if the user has the [Hochfrequenz SAP MCP server](https://github.com/Hochfrequenz/sapwebgui.mcp) installed (WebGUI or Desktop backend).
+> If you don't see the tools mentioned below, the user may be using a different MCP server or none at all — in that case, ask them to pull manually via the abapGit transaction.
+
+After pushing ABAP code to the git repository, pull it to SAP using these MCP tools:
+
+1. **Discover the repo name:** Call `sap_abapgit_list_repos()` to see all registered abapGit repositories with their names, Git URLs, and packages.
+2. **Pull:** Call `sap_abapgit_pull(repo="<REPO_NAME>")` to pull changes from git to SAP.
+   - If SAP requires a transport request, the tool returns an error with guidance. Retry with `sap_abapgit_pull(repo="<REPO_NAME>", trkorr="<TRANSPORT_ID>")`.
+   - For private repos, ensure `GITHUB_PAT` or `ABAPGIT_PAT` is set in the MCP server's environment (see Authentication below).
+3. **Verify:** After a successful pull, use `sap_read_status_bar()` to confirm the result, or navigate to the pulled objects (e.g., `sap_transaction("SE38")`) to check the code.
+
+These tools work on both the WebGUI and Desktop backends.
+
 ### Transport Management
 If the user has SAP Web GUI MCP installed and set up, ask the user about the ID of a transport request to use. Otherwise the LLM might also call the MCP-tool to list existing transport requests and choose a good existing TR.
 This is where pulled (vibe coded) workbench objects will be integrated with the regular SAP transport system.
 
 ### Authentication
-Remind the user that they have to have the `GITHUB_PAT` env var set in the SAP Web GUI MCP server settings (unless they're working only with public repos); it should have at least repo scope, but discussions is also helpful.
+Remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the SAP Web GUI MCP server settings (unless they're working only with public repos); it should have at least repo scope, but discussions is also helpful.
 Without the PAT set, they might need to manually pull (and enter the PAT) or the MCP tool to pull on SAP side might fail.
 Remind the user to restart the MCP by quitting the claude code session. This is the only way to apply new settings (i.e. env vars).
 

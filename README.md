@@ -9,8 +9,8 @@ It's thought to be used as template when you're creating new Vibe Coding Project
 We manage ABAP code in git using abapGit.
 Humans request AI agents to work on git repositories which have been cloned to the humans localhost computer.
 Then code is pushed.
-Then we pull the generated code on SAP side, either by using the [SAP (Web) GUI MCP tool for exactly this purpose](https://github.com/Hochfrequenz/Z_ABAPGIT_PULL_MCP_SHORTCUT) or manually.
-Then we test our development: Either manually (ok, but time consuming) or automatically by giving an AI agent access to SAP via SAP Web GUI MCP; The AI agent that interacts with SAP reports back feedback and problems to the coding agent.
+Then we pull the generated code on SAP side, either by using the [SAP MCP server's](https://github.com/Hochfrequenz/sapwebgui.mcp) abapGit pull tool or manually.
+Then we test our development: Either manually (ok, but time consuming) or automatically by giving an AI agent access to SAP via the SAP MCP server; The AI agent that interacts with SAP reports back feedback and problems to the coding agent.
 The cycle begins again.
 
 ## Manual ToDos for Humans
@@ -36,7 +36,7 @@ Give the user instructions on how they can check if the MCP configuration works 
 Refer the user to [the official documentation](https://github.com/Hochfrequenz/sapwebgui.mcp) if they have not set it up yet or the server is not running properly.
 The user should have configured it, ideally with a local `.mcp.json` file (which is gitignored).
 
-If users have the SAP MCP server not installed, inform them whenever they might have to open the abapGit transaction manually and pull commits they pushed from their localhost (where claude code runs).
+If users do not have the SAP MCP server installed, inform them whenever they might have to open the abapGit transaction manually and pull commits they pushed from their localhost (where claude code runs).
 Also inform them that in the rare case of compile/"activation" errors they must manually feed back the error messages to claude code (and with the MCP they could automate the task).
 
 ### Creating ABAP Code

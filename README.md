@@ -32,8 +32,8 @@ Both are valid — use whichever matches your system and your tooling.
 | --- | --- | --- |
 | **Source of truth between commits** | SAP | local git |
 | **Write to SAP** | `mcp-server-abap` tools (`set_source_from_file`, `patch_source`, `create_object`) | `git push` → abapGit pull |
-| **Activate / test** | `mcp-server-abap` (`activate_object`, `syntax_check`, `run_unit_tests`, `run_atc_check`) | via `sapwebgui.mcp` or manually |
-| **Transport management** | `mcp-server-abap` `transport` tool group | manually (or via `sapwebgui.mcp`) |
+| **Activate / test** | `mcp-server-abap` (`activate_object`, `syntax_check`, `run_unit_tests`, `run_atc_check`) | activation is automatic at abapGit pull time; tests via `sapwebgui.mcp` or manually |
+| **Transport management** | `mcp-server-abap` `transport` tool group | TR ID is passed to `sap_abapgit_pull(trkorr=...)`; the TR itself must be created separately (via `mcp-server-abap`, `sapwebgui.mcp`/`SE09`, or ADT) |
 | **XML correctness risk** | none — SAP owns serialization | high — the agent must write abapGit-compatible XML |
 | **Needs on SAP side** | ADT services active | abapGit installed + repo registered |
 
@@ -84,9 +84,10 @@ The user should have configured their MCPs locally, ideally with a project-local
 **Hochfrequenz colleagues:** internal setup documentation for both MCPs is at <https://brain.hochfrequenz.de/books/ki-tools-bei-hochfrequenz/chapter/sap-mcps>.
 
 #### If the user has no SAP MCP installed at all
-Both workflows can also be run without any MCP, just with more manual steps.
+Workflow A requires `mcp-server-abap`, so without any MCP you are effectively limited to Workflow B.
 Tell the user they will have to open the abapGit transaction on SAP side manually and pull commits they pushed from their localhost themselves.
-Also tell them that in the rare case of compile/activation errors they must manually copy the error messages back to you — with either MCP this feedback step can be automated.
+abapGit activates pulled objects automatically — any activation errors surface in the pull output on SAP side, and the user has to manually copy those error messages back to you so you can fix the code.
+With `sapwebgui.mcp` installed, this feedback step can be automated.
 
 ### Creating ABAP Code
 Generally you should follow the [Clean ABAP Guidelines](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md).
@@ -144,8 +145,9 @@ These tools work on both the WebGUI and Desktop backends of `sapwebgui.mcp`.
 ### Transport Management
 - **Workflow A:** use the `transport` tool group in `mcp-server-abap` to list, create, assign to, and release transport requests.
   Ask the user which transport to use, or call the list tool to pick a sensible existing one.
-- **Workflow B:** ask the user about the ID of a transport request to use.
-  If the user has `sapwebgui.mcp` set up, you can also navigate to `SE09`/`SE10` via `sap_transaction` to review transports.
+- **Workflow B:** the transport request ID must be passed explicitly to `sap_abapgit_pull(repo="<REPO_NAME>", trkorr="<TRANSPORT_ID>")` so abapGit knows which TR to assign the pulled objects to.
+  The TR itself has to be created separately — ask the user which existing TR to use, or, if `mcp-server-abap` is also available, call its `create_transport` tool to create a new one on the fly.
+  If only `sapwebgui.mcp` is available, you can also navigate to `SE09`/`SE10` via `sap_transaction` to list or create TRs manually.
   Pulled (vibe-coded) workbench objects will be integrated with the regular SAP transport system when they land in the TR.
 
 ### Authentication

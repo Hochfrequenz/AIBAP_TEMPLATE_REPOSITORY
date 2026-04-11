@@ -5,6 +5,24 @@ An ABAP Template Repository to be used when vibe coding ABAP with AI.
 This is an empty repository that contains nothing but instructions — not even an ABAP package.
 It is meant to be used as a GitHub template when you create a new vibe coding project in ABAP.
 
+## Table of contents
+
+- [General Idea / How it's thought to work](#general-idea--how-its-thought-to-work)
+  - [Workflow A — ADT (via mcp-server-abap)](#workflow-a--adt-via-mcp-server-abap)
+  - [Workflow B — abapGit roundtrip (via sapwebgui.mcp)](#workflow-b--abapgit-roundtrip-via-sapwebguimcp)
+  - [Which one should I use?](#which-one-should-i-use)
+- [Manual ToDos for Humans](#manual-todos-for-humans)
+  - [Local git is required](#local-git-is-required)
+  - [Initial (one-time) setup](#initial-one-time-setup)
+- [Instructions for AI Agents (like Claude Code, opencode, etc.)](#instructions-for-ai-agents-like-claude-code-opencode-etc)
+  - [General Setup](#general-setup)
+  - [Creating ABAP Code](#creating-abap-code)
+  - [Pulling Code to SAP (Workflow B)](#pulling-code-to-sap-workflow-b)
+  - [Transport Management](#transport-management)
+  - [Authentication](#authentication)
+  - [Deployment](#deployment)
+  - [Review Culture](#review-culture)
+
 ## General Idea / How it's thought to work
 We manage ABAP code in git, and we let AI agents do the actual writing.
 There are two complementary workflows an agent can use, and this template supports both — pick whichever matches what your SAP system and your local MCP setup support.

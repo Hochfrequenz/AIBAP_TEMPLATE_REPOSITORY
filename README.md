@@ -162,7 +162,7 @@ After pushing ABAP code to the git repository, pull it to SAP using these MCP to
 1. **Discover the repo name:** Call `sap_abapgit_list_repos()` to see all registered abapGit repositories with their names, Git URLs, and packages.
 2. **Pull:** Call `sap_abapgit_pull(repo="<REPO_NAME>")` to pull changes from git to SAP. The `repo` parameter is pattern-matched against registered repository names, so a substring is sufficient.
    - If SAP requires a transport request, the tool returns an error with guidance. Retry with `sap_abapgit_pull(repo="<REPO_NAME>", trkorr="<TRANSPORT_ID>")`.
-   - For private repos, ensure `GITHUB_PAT` or `ABAPGIT_PAT` is set in the MCP server's environment (see Authentication below).
+   - For private repos, the MCP server needs a GitHub PAT in its environment — see the `sapwebgui.mcp` README for how to configure it.
 3. **Verify:** After a successful pull, use `sap_read_status_bar()` to confirm the result, or navigate to the pulled objects (e.g., `sap_transaction("SE38")`) to check the code.
 
 These tools work on both the WebGUI and Desktop backends of `sapwebgui.mcp`.

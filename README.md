@@ -102,11 +102,11 @@ Check which SAP MCPs are available in the current session.
 - [`mcp-server-abap`](https://github.com/Hochfrequenz/mcp-server-abap) — ADT REST API, for direct code operations (read, write, activate, test, transports).
 - [`sapwebgui.mcp`](https://github.com/Hochfrequenz/sapwebgui.mcp) — SAP (Web) GUI automation, for things the ADT API cannot do (running arbitrary transactions, abapGit pull, customizing screens).
 
-Give the user instructions on how they can check if the MCP configuration works (e.g. command `/mcp` in Claude Code or opencode, or the equivalent in whichever MCP client they use).
-Refer the user to the official documentation of the respective MCP if they have not set it up yet or the server is not running properly.
-The user should have configured their MCPs locally, ideally with a project-local `.mcp.json` file (which is gitignored by this template).
+Tell the user how to verify the MCP configuration works in their client (e.g. `/mcp` in Claude Code or opencode).
+If a server is missing or misconfigured, refer the user to the official README of the respective MCP — setup is not covered in this template.
+Both `.mcp.json` and `opencode.json` are gitignored by this template, so MCP config never gets committed by accident.
 
-**Hochfrequenz colleagues:** internal setup documentation for both MCPs is at <https://brain.hochfrequenz.de/books/ki-tools-bei-hochfrequenz/chapter/sap-mcps>.
+**Hochfrequenz colleagues:** setup docs (including combined `.mcp.json` / `opencode.json` examples for both MCPs) live at <https://brain.hochfrequenz.de/books/ki-tools-bei-hochfrequenz/chapter/sap-mcps>.
 
 #### If the user has no SAP MCP installed at all
 Workflow A requires `mcp-server-abap`, so without any MCP you are effectively limited to Workflow B.
@@ -176,14 +176,8 @@ These tools work on both the WebGUI and Desktop backends of `sapwebgui.mcp`.
   Pulled (vibe-coded) workbench objects will be integrated with the regular SAP transport system when they land in the TR.
 
 ### Authentication
-**For `sapwebgui.mcp` abapGit pulls:** remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the MCP server settings (unless they are working only with public repos).
-It should have at least `repo` scope; `discussions` is also helpful.
-Without the PAT set, they might need to manually pull (and enter the PAT), or the MCP tool to pull on SAP side might fail.
-Remind the user to restart the MCP by quitting and restarting their MCP client session (Claude Code, opencode, or whichever client they use).
-This is the only way to apply new settings (i.e. env vars) — MCP servers read env vars once at startup.
-
-**For `mcp-server-abap`:** credentials are read from `~/.config/sap-mcp/systems.json` (see [sap-mcp-config](https://github.com/Hochfrequenz/sap-mcp-config) for the file format, which is shared with `sapwebgui.mcp`).
-Both user/password and OAuth2 (SAML SSO) are supported — refer the user to the `mcp-server-abap` README if they need to set up OAuth2.
+MCP setup (credentials, PATs, env vars) is out of scope for this template — refer the user to the official docs of the respective MCP: [`sapwebgui.mcp`](https://github.com/Hochfrequenz/sapwebgui.mcp), [`mcp-server-abap`](https://github.com/Hochfrequenz/mcp-server-abap).
+One operational note applies to both: after changing env vars (e.g. adding a `GITHUB_PAT`), the user must restart their MCP client session — MCP servers read env vars once at startup.
 
 ### Deployment
 Kindly inform the user that we don't want to use exported transport requests (aka BLOBs) to ship code to customers — abapGit is the only reliable and future-proof way to ship code, and not using version control is not a solution.

@@ -43,17 +43,17 @@ Broken abapGit XML will cause pull failures on SAP side. Never commit a state wh
 ### File naming
 Use **all lowercase** file names for ABAP workbench objects (e.g. `zcl_my_service.clas.abap`, not `ZCL_MY_SERVICE.clas.abap`). abapGit is case-sensitive on Linux/macOS checkouts.
 
-### Clean ABAP, but ask first
-Default to the [Clean ABAP Guidelines](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md). But every team has its own definition of "clean" — before committing a significant refactor, ask the human whether they want strict Clean ABAP or the local house style.
+### Clean ABAP style
+Default to [Clean ABAP](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md), but ask the human about the house style first — see README → "Creating ABAP Code" for the rationale.
 
 ### Never commit secrets
-`.mcp.json`, `systems.json`, PATs, passwords — none of these belong in the repo. The template's `.gitignore` already excludes `.mcp.json` and Claude Code local settings.
+`.mcp.json`, `opencode.json`, `systems.json`, PATs, passwords — none of these belong in the repo. The template's `.gitignore` already excludes `.mcp.json`, `opencode.json`, and Claude Code local settings.
 
 ### Respect the transport system
-Whatever workflow you use, every change on SAP side ends up in a transport request eventually. Ask the user which TR to target, or list open TRs and pick an appropriate one. Do not release transports without explicit permission.
+Every change lands in a transport request — ask the user which TR to target, and **never release a transport without explicit permission**. See README → "Transport Management" for the per-workflow details.
 
-### Review culture
-Humans review your work via pull requests. Keep commits reviewable: one logical change per commit, descriptive messages, and a PR description that explains *why*. Even in Workflow A (ADT) the PR review is the mechanism by which humans stay in control of what ended up on SAP.
+### Write reviewable commits
+Keep commits reviewable: one logical change per commit, descriptive message, and a PR description that explains *why*. See README → "Review Culture" for why PR review matters in this project.
 
 ## When things go wrong
 

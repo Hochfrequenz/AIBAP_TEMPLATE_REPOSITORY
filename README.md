@@ -59,6 +59,7 @@ If you plan to use the abapGit workflow, you have to register this repository as
 The official abapGit documentation is well maintained — follow it instead of duplicating steps here.
 
 - Create a new package in `se80`.
+- Ideally the package name is similar to the repo name, and its long text description contains the repository URL — this makes it easy to find the package later and to trace it back to the git repo.
 - Call the abapGit transaction or report and follow the instructions for registering a [new online repository](https://docs.abapgit.org/user-guide/projects/online/install.html).
 - Do an initial commit on SAP side (this implies a push).
 - For private repositories you will need a [PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) with `repo` scope — use PATs instead of your password.
@@ -81,6 +82,11 @@ Refer the user to the official documentation of the respective MCP if they have 
 The user should have configured their MCPs locally, ideally with a project-local `.mcp.json` file (which is gitignored by this template).
 
 **Hochfrequenz colleagues:** internal setup documentation for both MCPs is at <https://brain.hochfrequenz.de/books/ki-tools-bei-hochfrequenz/chapter/sap-mcps>.
+
+#### If the user has no SAP MCP installed at all
+Both workflows can also be run without any MCP, just with more manual steps.
+Tell the user they will have to open the abapGit transaction on SAP side manually and pull commits they pushed from their localhost themselves.
+Also tell them that in the rare case of compile/activation errors they must manually copy the error messages back to you — with either MCP this feedback step can be automated.
 
 ### Creating ABAP Code
 Generally you should follow the [Clean ABAP Guidelines](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md).

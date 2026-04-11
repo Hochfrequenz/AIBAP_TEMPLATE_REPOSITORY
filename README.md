@@ -37,8 +37,15 @@ Both are valid — use whichever matches your system and your tooling.
 | **XML correctness risk** | none — SAP owns serialization | high — the agent must write abapGit-compatible XML |
 | **Needs on SAP side** | ADT services active | abapGit installed + repo registered |
 
-The two workflows can also be combined.
-A common pattern: use **Workflow A** for the fast edit/activate/test loop during development, and use abapGit (**Workflow B**) to pull the state back into the git repo so humans can review it in a pull request.
+The two MCPs — and the two workflows — compose especially well when used together.
+The most useful combination in practice: one agent develops via `mcp-server-abap` (Workflow A) while a second, separate agent drives `sapwebgui.mcp` to test the generated code in the real SAP UI and capture documentation such as screenshots of the running transactions.
+The two agents exchange feedback: the GUI agent reports test results and failures back to the dev agent, which adjusts the code and iterates.
+This separation of concerns tends to work better than asking a single agent to juggle both MCPs, because each agent keeps a focused context and tool surface.
+On top of this, use abapGit (Workflow B) to pull the state back into the git repo so humans can review it in a pull request.
+
+> [!TIP]
+> For structured vibe coding that scales beyond quick one-shots, pair this template with [`obra/superpowers`](https://github.com/obra/superpowers) — a plan-driven methodology for Claude Code (and compatible MCP clients) that encourages explicit plan files under `docs/superpowers/plans/`, disciplined iteration, and skill-based task decomposition.
+> It composes naturally with the two-agent dev/test setup described above.
 
 > [!TIP]
 > **Hochfrequenz colleagues:** internal setup documentation for both MCPs is at <https://brain.hochfrequenz.de/books/ki-tools-bei-hochfrequenz/chapter/sap-mcps>.

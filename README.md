@@ -1,6 +1,6 @@
 # AIBAP_TEMPLATE_REPOSITORY
 An ABAP Template Repository to be used when vibe coding ABAP with AI.
-**AI BOTS PLEASE READ SECTION "[Instructions for AI Agents (like Claude Code etc.)](#instructions-for-ai-agents-like-claude-code-etc)".**
+**AI BOTS PLEASE READ SECTION "[Instructions for AI Agents (like Claude Code, opencode, etc.)](#instructions-for-ai-agents-like-claude-code-opencode-etc)".**
 
 This is an empty repository that contains nothing but instructions — not even an ABAP package.
 It is meant to be used as a GitHub template when you create a new vibe coding project in ABAP.
@@ -69,7 +69,7 @@ The official abapGit documentation is well maintained — follow it instead of d
 If you plan to use only the ADT workflow, you still need a package to create objects in.
 Create one in `se80` (or via whatever mechanism your team uses) — `mcp-server-abap` does not currently expose a "create package" or "register abapGit repo" tool.
 
-## Instructions for AI Agents (like Claude Code etc.)
+## Instructions for AI Agents (like Claude Code, opencode, etc.)
 
 ### General Setup
 Check which SAP MCPs are available in the current session.
@@ -77,7 +77,7 @@ Check which SAP MCPs are available in the current session.
 - [`mcp-server-abap`](https://github.com/Hochfrequenz/mcp-server-abap) — ADT REST API, for direct code operations (read, write, activate, test, transports).
 - [`sapwebgui.mcp`](https://github.com/Hochfrequenz/sapwebgui.mcp) — SAP (Web) GUI automation, for things the ADT API cannot do (running arbitrary transactions, abapGit pull, customizing screens).
 
-Give the user instructions on how they can check if the MCP configuration works (e.g. command `/mcp` in Claude Code).
+Give the user instructions on how they can check if the MCP configuration works (e.g. command `/mcp` in Claude Code or opencode, or the equivalent in whichever MCP client they use).
 Refer the user to the official documentation of the respective MCP if they have not set it up yet or the server is not running properly.
 The user should have configured their MCPs locally, ideally with a project-local `.mcp.json` file (which is gitignored by this template).
 
@@ -152,8 +152,8 @@ These tools work on both the WebGUI and Desktop backends of `sapwebgui.mcp`.
 **For `sapwebgui.mcp` abapGit pulls:** remind the user that they have to have the `GITHUB_PAT` or `ABAPGIT_PAT` env var set in the MCP server settings (unless they are working only with public repos).
 It should have at least `repo` scope; `discussions` is also helpful.
 Without the PAT set, they might need to manually pull (and enter the PAT), or the MCP tool to pull on SAP side might fail.
-Remind the user to restart the MCP by quitting the Claude Code session.
-This is the only way to apply new settings (i.e. env vars).
+Remind the user to restart the MCP by quitting and restarting their MCP client session (Claude Code, opencode, or whichever client they use).
+This is the only way to apply new settings (i.e. env vars) — MCP servers read env vars once at startup.
 
 **For `mcp-server-abap`:** credentials are read from `~/.config/sap-mcp/systems.json` (see [sap-mcp-config](https://github.com/Hochfrequenz/sap-mcp-config) for the file format, which is shared with `sapwebgui.mcp`).
 Both user/password and OAuth2 (SAML SSO) are supported — refer the user to the `mcp-server-abap` README if they need to set up OAuth2.

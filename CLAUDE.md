@@ -8,7 +8,7 @@ This file is part of the template and gets copied into every new project. Adjust
 
 A git repository that holds the ABAP source of **one** ABAP package. Code is written by AI agents (you), reviewed by humans in pull requests, and synchronized with a SAP system either:
 
-- **via ADT** — you edit SAP directly through [`mcp-server-abap`](https://github.com/Hochfrequenz/mcp-server-abap) and pull the resulting state back into git for review, or
+- **via ADT** — you edit SAP directly through [`aibap.mcp`](https://github.com/Hochfrequenz/aibap.mcp) and pull the resulting state back into git for review, or
 - **via abapGit** — you write files in this working tree, push to git, and abapGit pulls them into SAP.
 
 Both workflows are supported. The README describes when each applies.
@@ -19,23 +19,23 @@ Before you start editing, check which MCPs are actually available in this sessio
 
 | Task | Prefer |
 |---|---|
-| Read, write, activate, syntax-check, test ABAP code | `mcp-server-abap` (ADT) |
-| Create a new object (`PROG`, `CLAS`, `INTF`, `FUGR`, `MSAG` — all systems; `DDLS`, `TABL`, `DTEL`, `DOMA` — S/4HANA only) | `mcp-server-abap` (`create_object`) |
-| Transport management (create, assign, release) | `mcp-server-abap` (`transport` group) |
-| ATC / ABAP Unit / syntax check | `mcp-server-abap` |
-| Short dumps / ST22 analysis | `mcp-server-abap` (`shortdumps` group) |
-| Pulling a git branch into SAP via abapGit | `sapwebgui.mcp` (`sap_abapgit_pull`) — requires the `Z_ABAPGIT_PULL_MCP_SHORTCUT` report on SAP side |
-| Running an arbitrary transaction, looking at a screen | `sapwebgui.mcp` (`sap_transaction`, browser tools) |
-| Customizing / table maintenance screens | `sapwebgui.mcp` |
+| Read, write, activate, syntax-check, test ABAP code | `aibap.mcp` (ADT) |
+| Create a new object (`PROG`, `CLAS`, `INTF`, `FUGR`, `MSAG` — all systems; `DDLS`, `TABL`, `DTEL`, `DOMA` — S/4HANA only) | `aibap.mcp` (`create_object`) |
+| Transport management (create, assign, release) | `aibap.mcp` (`transport` group) |
+| ATC / ABAP Unit / syntax check | `aibap.mcp` |
+| Short dumps / ST22 analysis | `aibap.mcp` (`shortdumps` group) |
+| Pulling a git branch into SAP via abapGit | `sapgui.mcp` (`sap_abapgit_pull`) — requires the `Z_ABAPGIT_PULL_MCP_SHORTCUT` report on SAP side |
+| Running an arbitrary transaction, looking at a screen | `sapgui.mcp` (`sap_transaction`, browser tools) |
+| Customizing / table maintenance screens | `sapgui.mcp` |
 
-If a tool you need is not visible, tell the user — they may need to enable a tool group (e.g. `--tools=...` for `mcp-server-abap`) or start the other MCP.
+If a tool you need is not visible, tell the user — they may need to enable a tool group (e.g. `--tools=...` for `aibap.mcp`) or start the other MCP.
 
 ## Rules of the road
 
 ### Do not hand-write abapGit XML
 If you are tempted to write a `*.clas.xml`, `*.prog.xml`, etc. from scratch: stop. Either
 
-1. use `mcp-server-abap`'s `create_object` to let SAP serialize the object and then pull the result into git via abapGit, or
+1. use `aibap.mcp`'s `create_object` to let SAP serialize the object and then pull the result into git via abapGit, or
 2. copy the structure from an existing object of the same type in the same repo.
 
 Broken abapGit XML will cause pull failures on SAP side. Never commit a state whose XML you are not sure abapGit will accept.
@@ -58,7 +58,7 @@ Keep commits reviewable: one logical change per commit, descriptive message, and
 ## When things go wrong
 
 - **Syntax error on activate:** fix it before moving on. Don't commit code that doesn't activate.
-- **423 lock errors via ADT:** the object is locked by someone else, or SAP is checking the lock against the wrong enqueue table. `mcp-server-abap` auto-locks; if a persistent 423 remains on a fresh object you own, the fix is usually a stateful session (`X-sap-adt-sessiontype: stateful`) — check `mcp-server-abap`'s own CLAUDE.md for current guidance.
+- **423 lock errors via ADT:** the object is locked by someone else, or SAP is checking the lock against the wrong enqueue table. `aibap.mcp` auto-locks; if a persistent 423 remains on a fresh object you own, the fix is usually a stateful session (`X-sap-adt-sessiontype: stateful`) — check `aibap.mcp`'s own CLAUDE.md for current guidance.
 - **abapGit pull fails:** most likely XML serialization issue (see "Do not hand-write abapGit XML" above) or a missing PAT. Read the error from `sap_abapgit_pull` or the status bar before guessing.
 - **MCP server not visible:** the user may need to restart Claude Code after editing `.mcp.json` or env vars.
 

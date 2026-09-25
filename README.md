@@ -92,7 +92,9 @@ The official abapGit documentation is well maintained — follow it instead of d
 
 #### Create the package on SAP side (Workflow A)
 If you plan to use only the ADT workflow, you still need a package to create objects in.
-Create one in `se80` (or via whatever mechanism your team uses) — `aibap.mcp` does not currently expose a "create package" or "register abapGit repo" tool.
+On S/4HANA or a recent ABAP Platform, your AI agent can create it with the `aibap.mcp` tool `create_package` (available since `aibap.mcp` v0.10.0).
+Older ECC systems have no ADT package endpoint — create the package in `se80` or `se21` there (or via whatever mechanism your team uses).
+`aibap.mcp` does not expose a "register abapGit repo" tool.
 
 ## Instructions for AI Agents (like Claude Code, opencode, etc.)
 

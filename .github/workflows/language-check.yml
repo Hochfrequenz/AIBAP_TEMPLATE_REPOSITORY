@@ -1,0 +1,129 @@
+name: Original language check
+
+on: pull_request
+
+permissions:
+  contents: read
+
+env:
+  FALLBACK_LANGUAGE: ${{ vars.ABAP_ORIGINAL_LANGUAGE || 'E' }}
+  # Set the repository variable ABAP_CHECK_I18N_LANGUAGES to 'true' to also check tags inside I18N_* structures.
+  CHECK_I18N: ${{ vars.ABAP_CHECK_I18N_LANGUAGES || 'false' }}
+
+jobs:
+  check-language:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check serialized language tags
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -d src ]]; then
+            echo "No src/ directory; skipping original-language check."
+            exit 0
+          fi
+
+          language="$FALLBACK_LANGUAGE"
+          if [[ -f .abapgit.xml ]]; then
+            configured_language="$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          root = ET.parse(".abapgit.xml").getroot()
+          for element in root.iter():
+              if element.tag.rsplit("}", 1)[-1] == "MASTER_LANGUAGE":
+                  print(element.text.strip() if element.text else "")
+                  break
+          else:
+              print("__MISSING__")
+          PY
+          )"
+            if [[ "$configured_language" != "__MISSING__" ]]; then
+              language="$configured_language"
+            fi
+          fi
+
+          if [[ ! "$language" =~ ^[A-Za-z0-9]$ ]]; then
+            echo "Expected the original language to be a one-character SAP language key (letter or digit, e.g. D, E or 1); got '$language'." >&2
+            exit 1
+          fi
+
+          EXPECTED_LANGUAGE="$language" CHECK_I18N="$CHECK_I18N" python3 - <<'PY'
+          import os
+          import re
+          import sys
+          from pathlib import Path
+          from xml.parsers import expat
+
+          expected_language = os.environ["EXPECTED_LANGUAGE"]
+          skip_i18n = os.environ.get("CHECK_I18N", "false").lower() != "true"
+          language_tag = re.compile(r"[A-Z0-9_]*(?:LANGU|LANGUAGE|MASTERLANG|SPRAS|SPRSL)")
+
+          def opening_tag_end(xml, start):
+              quote = None
+              for index in range(start, len(xml)):
+                  character = xml[index]
+                  if quote:
+                      if character == quote:
+                          quote = None
+                  elif character in (ord("'"), ord('"')):
+                      quote = character
+                  elif character == ord(">"):
+                      return index + 1
+              raise ValueError("unterminated XML opening tag")
+
+          failures = []
+          for path in sorted(Path("src").rglob("*.xml")):
+              xml = path.read_bytes()
+              parser = expat.ParserCreate()
+              stack = []
+
+              def start_element(name, attributes):
+                  local_name = name.rsplit("}", 1)[-1].rsplit(":", 1)[-1]
+                  parent_in_i18n = stack[-1]["in_i18n"] if stack else False
+                  in_i18n = parent_in_i18n or local_name.startswith("I18N_")
+                  start = parser.CurrentByteIndex
+                  end = opening_tag_end(xml, start)
+                  stack.append({
+                      "name": local_name,
+                      "in_i18n": in_i18n,
+                      "is_language_tag": bool(language_tag.fullmatch(local_name)),
+                      "self_closing": xml[start:end].rstrip().endswith(b"/>"),
+                      "has_child": False,
+                      "text": [],
+                  })
+                  if len(stack) > 1 and stack[-2]["is_language_tag"]:
+                      stack[-2]["has_child"] = True
+
+              def character_data(value):
+                  if stack and stack[-1]["is_language_tag"]:
+                      stack[-1]["text"].append(value)
+
+              def end_element(name):
+                  element = stack.pop()
+                  if (
+                      element["is_language_tag"]
+                      and not (skip_i18n and element["in_i18n"])
+                      and not element["self_closing"]
+                  ):
+                      value = "".join(element["text"])
+                      if element["has_child"] or value != expected_language:
+                          failures.append(f"{path}: <{element['name']}>{value}</{element['name']}>")
+
+              parser.StartElementHandler = start_element
+              parser.CharacterDataHandler = character_data
+              parser.EndElementHandler = end_element
+              try:
+                  parser.Parse(xml, True)
+              except expat.ExpatError as error:
+                  failures.append(f"{path}: invalid XML: {error}")
+
+          if failures:
+              print("\n".join(failures), file=sys.stderr)
+              print(
+                  f"Found language tags other than the agreed original language ({expected_language}).",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          PY

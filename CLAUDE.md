@@ -56,7 +56,11 @@ Mixed languages cause trouble later: abapGit writes the language into the XML (`
   For ADT, check the result rather than trusting the setting: the logon language may be taken from the HTTP `Accept-Language` header, not only from `sap-language`.
 - After creating an object, check its original language (TADIR `MASTERLANG`) and that its description exists in that language.
 - Check the serialized XML before committing: all language tags must carry the agreed language.
-  The [original-language workflow](.github/workflows/language-check.yml) checks XML under `src/` on every pull request; empty language tags also fail. It uses `MASTER_LANGUAGE` from `.abapgit.xml` when present; otherwise, set the `ABAP_ORIGINAL_LANGUAGE` repository variable (default `E`). Repositories that deliberately serialize translations via `I18N_LANGUAGES` must adapt the check to exclude those translation entries.
+  The [original-language workflow](.github/workflows/language-check.yml) checks XML under `src/` on every pull request.
+  Empty paired language tags fail, while self-closing language tags pass.
+  Language tags nested under elements whose names start with `I18N_` are skipped.
+  The workflow uses `MASTER_LANGUAGE` from `.abapgit.xml` when present.
+  Otherwise, set the `ABAP_ORIGINAL_LANGUAGE` repository variable (default `E`).
 - If an object already has the wrong original language, tell the user before changing it (for example via SE03 "change object directory entry" where the release allows it, otherwise with Basis support).
   The texts do not move with the language: after the change, the descriptions and DDIC texts must be maintained again in the new language.
 

@@ -51,13 +51,13 @@ Every workbench object has an original language (TADIR field `MASTERLANG`), and 
 A new object gets the logon language of the session that creates it, so an agent logged on in English creates English objects in a German package without noticing.
 Mixed languages cause trouble later: abapGit writes the language into the XML (`LANGU`, `DDLANGUAGE`, `MASTERLANG`), and SAP asks "logon language differs from original language" for every such object when you pull or edit it in the other language.
 
-- Agree on the package's original language with the user once, before creating the first object, and set it as `MASTER_LANGUAGE` in `.abapgit.xml`.
+- Agree on the package's original language with the user once, before creating the first object, and set it as `MASTER_LANGUAGE` in `.abapgit.xml` (the one-letter SAP language key, e.g. `E` or `D`).
 - Make every session that creates objects log on in that language, both the ADT MCP and the SAP GUI MCP (the `language` setting of the system in the MCP configuration).
   For ADT, check the result rather than trusting the setting: the logon language may be taken from the HTTP `Accept-Language` header, not only from `sap-language`.
 - After creating an object, check its original language (TADIR `MASTERLANG`) and that its description exists in that language.
 - Check the serialized XML before committing: all language tags must carry the agreed language.
-  A small CI step that greps `src/*.xml` for language tags with another value catches regressions.
-- If an object already has the wrong original language, tell the user before changing it.
+  A small CI step that greps `src/*.xml` for language tags with another value catches regressions (exclude translation entries if the repo serializes other languages via `I18N_LANGUAGES`).
+- If an object already has the wrong original language, tell the user before changing it (for example via SE03 "change object directory entry" where the release allows it, otherwise with Basis support).
   The texts do not move with the language: after the change, the descriptions and DDIC texts must be maintained again in the new language.
 
 ### Never commit secrets

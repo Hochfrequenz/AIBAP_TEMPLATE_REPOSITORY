@@ -35,6 +35,10 @@ It can read and write source, run syntax checks, activate objects, run ABAP Unit
 The loop is tight: edit → syntax check → activate → test — all via MCP tool calls.
 Git still matters for code review and history: you commit the pulled-back state to the repo so humans can review it in a PR.
 
+> [!WARNING]
+> When parallel or stacked PRs share one dev system, a whole-package export or sync can pull other PRs' unfinished objects into your branch.
+> See [Stacked PRs and shared dev system](CLAUDE.md#stacked-prs-and-shared-dev-system) for task-scoped export and commit rules.
+
 **Requires:** the SAP system must have the ADT services active (transaction `SICF`: `/sap/bc/adt/*`), the user must have developer authorizations, and [`aibap.mcp`](https://github.com/Hochfrequenz/aibap.mcp) must be configured in your MCP client.
 
 ### Workflow B — abapGit roundtrip (via [`sapgui.mcp`](https://github.com/Hochfrequenz/sapgui.mcp))

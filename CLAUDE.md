@@ -76,6 +76,8 @@ When several PRs use the same dev system in Workflow A, a whole-package export o
 - Before committing, compare all changed files (including untracked files) with the list of objects you touched in this task. Drop unrelated sync output or stash it if it must be preserved; do not discard someone else's local work.
 - If the sync tooling supports an object or file list, pass that list to the export instead of exporting the whole package.
 
+Related MCP work: [Hochfrequenz/aibap.mcp#534 — better abapGit support](https://github.com/Hochfrequenz/aibap.mcp/issues/534).
+
 ## When things go wrong
 
 - **Syntax error on activate:** fix it before moving on. Don't commit code that doesn't activate.

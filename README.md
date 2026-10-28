@@ -34,7 +34,8 @@ The loop is tight: edit → syntax check → activate → test — all via MCP t
 Git still matters for code review and history: you commit the pulled-back state to the repo so humans can review it in a PR.
 
 > [!WARNING]
-> When parallel or stacked PRs share one dev system, a whole-package export or sync can pull other PRs' unfinished objects into your branch. Commit only your task's files with explicit `git add <paths>`, never `git add -A` after a package sync. Compare changed files with the objects you touched, drop or stash unrelated sync output, and prefer an object- or file-scoped export when supported. See [Stacked PRs and shared dev system](CLAUDE.md#stacked-prs-and-shared-dev-system).
+> When parallel or stacked PRs share one dev system, a whole-package export or sync can pull other PRs' unfinished objects into your branch.
+> See [Stacked PRs and shared dev system](CLAUDE.md#stacked-prs-and-shared-dev-system) for task-scoped export and commit rules.
 
 **Requires:** the SAP system must have the ADT services active (transaction `SICF`: `/sap/bc/adt/*`), the user must have developer authorizations, and [`aibap.mcp`](https://github.com/Hochfrequenz/aibap.mcp) must be configured in your MCP client.
 

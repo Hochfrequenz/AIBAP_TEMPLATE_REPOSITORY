@@ -1,0 +1,60 @@
+name: Original language check
+
+on: pull_request
+
+permissions:
+  contents: read
+
+env:
+  FALLBACK_LANGUAGE: ${{ vars.ABAP_ORIGINAL_LANGUAGE || 'E' }}
+
+jobs:
+  check-language:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check serialized language tags
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -d src ]]; then
+            echo "No src/ directory; skipping original-language check."
+            exit 0
+          fi
+
+          language="$FALLBACK_LANGUAGE"
+          if [[ -f .abapgit.xml ]]; then
+            configured_language="$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          root = ET.parse(".abapgit.xml").getroot()
+          for element in root.iter():
+              if element.tag.rsplit("}", 1)[-1] == "MASTER_LANGUAGE":
+                  print(element.text.strip() if element.text else "")
+                  break
+          else:
+              print("__MISSING__")
+          PY
+          )"
+            if [[ "$configured_language" != "__MISSING__" ]]; then
+              language="$configured_language"
+            fi
+          fi
+
+          if [[ ! "$language" =~ ^[A-Z]$ ]]; then
+            echo "Expected the original language to be a one-letter uppercase SAP language key; got '$language'." >&2
+            exit 1
+          fi
+
+          pattern="<([A-Z0-9_]*(LANGU|LANGUAGE|MASTERLANG|SPRAS|SPRSL))>(?!${language}</)[^<]*</"
+          if grep -rnP --include='*.xml' "$pattern" src; then
+            echo "Found language tags other than the agreed original language ($language)." >&2
+            exit 1
+          else
+            status=$?
+            if [[ "$status" -ne 1 ]]; then
+              echo "Language-tag check failed with grep exit code $status." >&2
+              exit "$status"
+            fi
+          fi

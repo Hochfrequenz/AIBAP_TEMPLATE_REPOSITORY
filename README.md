@@ -2,6 +2,8 @@
 An ABAP Template Repository to be used when vibe coding ABAP with AI.
 **AI BOTS PLEASE READ SECTION "[Instructions for AI Agents (like Claude Code, opencode, etc.)](#instructions-for-ai-agents-like-claude-code-opencode-etc)".**
 
+[Extension points](docs/extension-points.md) · [API](docs/api.md)
+
 This is an empty repository that contains nothing but instructions — not even an ABAP package.
 It is meant to be used as a GitHub template when you create a new vibe coding project in ABAP.
 

@@ -32,6 +32,10 @@ If a tool you need is not visible, tell the user — they may need to enable a t
 
 ## Rules of the road
 
+### Keep package documentation current
+Every PR that adds or changes an extension point or API endpoint must update `docs/extension-points.md` and/or `docs/api.md` in the same PR.
+Reviewers check that these references match the code.
+
 ### Do not hand-write abapGit XML
 If you are tempted to write a `*.clas.xml`, `*.prog.xml`, etc. from scratch: stop. Either
 

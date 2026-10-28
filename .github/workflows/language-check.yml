@@ -44,8 +44,8 @@ jobs:
             fi
           fi
 
-          if [[ ! "$language" =~ ^[A-Z]$ ]]; then
-            echo "Expected the original language to be a one-letter uppercase SAP language key; got '$language'." >&2
+          if [[ ! "$language" =~ ^[A-Za-z0-9]$ ]]; then
+            echo "Expected the original language to be a one-character SAP language key (letter or digit, e.g. D, E or 1); got '$language'." >&2
             exit 1
           fi
 

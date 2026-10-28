@@ -46,6 +46,20 @@ Use **all lowercase** file names for ABAP workbench objects (e.g. `zcl_my_servic
 ### Clean ABAP style
 Default to [Clean ABAP](https://github.com/SAP/styleguides/blob/main/clean-abap/CleanABAP.md), but ask the human about the house style first — see README → "Creating ABAP Code" for the rationale.
 
+### Keep one original language for all objects
+Every workbench object has an original language (TADIR field `MASTERLANG`), and its texts (descriptions, DDIC texts, program titles) are stored per language.
+A new object gets the logon language of the session that creates it, so an agent logged on in English creates English objects in a German package without noticing.
+Mixed languages cause trouble later: abapGit writes the language into the XML (`LANGU`, `DDLANGUAGE`, `MASTERLANG`), and SAP asks "logon language differs from original language" for every such object when you pull or edit it in the other language.
+
+- Agree on the package's original language with the user once, before creating the first object, and set it as `MASTER_LANGUAGE` in `.abapgit.xml`.
+- Make every session that creates objects log on in that language, both the ADT MCP and the SAP GUI MCP (the `language` setting of the system in the MCP configuration).
+  For ADT, check the result rather than trusting the setting: the logon language may be taken from the HTTP `Accept-Language` header, not only from `sap-language`.
+- After creating an object, check its original language (TADIR `MASTERLANG`) and that its description exists in that language.
+- Check the serialized XML before committing: all language tags must carry the agreed language.
+  A small CI step that greps `src/*.xml` for language tags with another value catches regressions.
+- If an object already has the wrong original language, tell the user before changing it.
+  The texts do not move with the language: after the change, the descriptions and DDIC texts must be maintained again in the new language.
+
 ### Never commit secrets
 `.mcp.json`, `opencode.json`, `systems.json`, PATs, passwords — none of these belong in the repo. The template's `.gitignore` already excludes `.mcp.json`, `opencode.json`, and Claude Code local settings.
 
@@ -60,6 +74,7 @@ Keep commits reviewable: one logical change per commit, descriptive message, and
 - **Syntax error on activate:** fix it before moving on. Don't commit code that doesn't activate.
 - **423 lock errors via ADT:** the object is locked by someone else, or SAP is checking the lock against the wrong enqueue table. `aibap.mcp` auto-locks; if a persistent 423 remains on a fresh object you own, the fix is usually a stateful session (`X-sap-adt-sessiontype: stateful`) — check `aibap.mcp`'s own CLAUDE.md for current guidance.
 - **abapGit pull fails:** most likely XML serialization issue (see "Do not hand-write abapGit XML" above) or a missing PAT. Read the error from `sap_abapgit_pull` or the status bar before guessing.
+- **Popup "logon language differs from original language" on every pull:** objects were created in another language; see "Keep one original language for all objects" above.
 - **MCP server not visible:** the user may need to restart Claude Code after editing `.mcp.json` or env vars.
 
 ## Project-specific notes

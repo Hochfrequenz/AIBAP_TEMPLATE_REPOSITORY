@@ -7,6 +7,8 @@ permissions:
 
 env:
   FALLBACK_LANGUAGE: ${{ vars.ABAP_ORIGINAL_LANGUAGE || 'E' }}
+  # Set the repository variable ABAP_CHECK_I18N_LANGUAGES to 'true' to also check tags inside I18N_* structures.
+  CHECK_I18N: ${{ vars.ABAP_CHECK_I18N_LANGUAGES || 'false' }}
 
 jobs:
   check-language:
@@ -47,7 +49,7 @@ jobs:
             exit 1
           fi
 
-          EXPECTED_LANGUAGE="$language" python3 - <<'PY'
+          EXPECTED_LANGUAGE="$language" CHECK_I18N="$CHECK_I18N" python3 - <<'PY'
           import os
           import re
           import sys
@@ -55,6 +57,7 @@ jobs:
           from xml.parsers import expat
 
           expected_language = os.environ["EXPECTED_LANGUAGE"]
+          skip_i18n = os.environ.get("CHECK_I18N", "false").lower() != "true"
           language_tag = re.compile(r"[A-Z0-9_]*(?:LANGU|LANGUAGE|MASTERLANG|SPRAS|SPRSL)")
 
           def opening_tag_end(xml, start):
@@ -101,7 +104,7 @@ jobs:
                   element = stack.pop()
                   if (
                       element["is_language_tag"]
-                      and not element["in_i18n"]
+                      and not (skip_i18n and element["in_i18n"])
                       and not element["self_closing"]
                   ):
                       value = "".join(element["text"])

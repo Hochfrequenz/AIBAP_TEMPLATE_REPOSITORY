@@ -59,6 +59,7 @@ Mixed languages cause trouble later: abapGit writes the language into the XML (`
   The [original-language workflow](.github/workflows/language-check.yml) checks XML under `src/` on every pull request.
   Empty paired language tags fail, while self-closing language tags pass.
   Language tags nested under elements whose names start with `I18N_` are skipped.
+  Set the repository variable `ABAP_CHECK_I18N_LANGUAGES` to `true` to check them as well, because translations legitimately carry other languages.
   The workflow uses `MASTER_LANGUAGE` from `.abapgit.xml` when present.
   Otherwise, set the `ABAP_ORIGINAL_LANGUAGE` repository variable (default `E`).
 - If an object already has the wrong original language, tell the user before changing it (for example via SE03 "change object directory entry" where the release allows it, otherwise with Basis support).
